@@ -17,6 +17,7 @@ typedef struct skip_node {
 typedef struct skip_list {
     int size;
     int seed;
+    int max_height;
     skip_node *head;
 } skip_list;
 

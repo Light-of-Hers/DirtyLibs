@@ -5,11 +5,13 @@
 #include <time.h>
 
 #define MAX_HEIGHT 32
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 skip_list *make_skip_list() {
     skip_list *sl = malloc(sizeof(skip_list));
     sl->size = 0;
     sl->seed = time(NULL);
+    sl->max_height = 1;
     sl->head = malloc(sizeof(skip_node));
     skip_node *hd = sl->head;
     hd->height = MAX_HEIGHT;
@@ -67,11 +69,13 @@ skip_iter skip_list_find(skip_list *sl, int val) {
 
 void skip_list_insert(skip_list *sl, int val) {
     skip_node *record[MAX_HEIGHT] = {0};
+    for (int i = sl->max_height; i < MAX_HEIGHT; ++i)
+        record[i] = sl->head;
 #ifdef RANDOM_ACCESS
     int start[MAX_HEIGHT] = {0};
     int step = 0;
 #endif
-    int h = sl->head->height - 1;
+    int h = sl->max_height - 1;
     skip_node *cur = sl->head;
     while (h >= 0) {
         skip_node *fwd = cur->links[h].ptr[1];
@@ -90,6 +94,7 @@ void skip_list_insert(skip_list *sl, int val) {
         }
     }
     skip_node *new = make_skip_node(sl, val);
+    sl->max_height = MAX(sl->max_height, new->height);
     for (int i = 0; i < new->height; ++i) {
         skip_node *next = record[i]->links[i].ptr[1];
         skip_node *prev = record[i];
@@ -186,13 +191,14 @@ skip_iter skip_iter_jump(skip_iter iter, int step) {
     int fwd = step > 0;
     step = fwd ? step : -step;
 
-    int h = iter->height - 1;
     const skip_node *cur = iter;
+    int h = cur->height - 1;
     while (step > 0) {
         int span = cur->links[h].span[fwd];
         if (span <= step) {
             step -= span;
             cur = cur->links[h].ptr[fwd];
+            h = cur->height - 1;
         } else {
             h--;
         }
