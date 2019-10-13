@@ -1,7 +1,12 @@
+#ifndef __CRZ_AVLTREE_HPP__
+#define __CRZ_AVLTREE_HPP__
+
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <utility>
+
+namespace crz{
 
 template <class T>
 class AvlTree {
@@ -325,19 +330,7 @@ class AvlTree {
     }
     // ---------------------------------------
 };
+   
+}; // namespace crz
 
-int main() {
-    AvlTree<int> t1, t2;
-    for (int i = 0; i < 1000; ++i) t1.insert(i);
-    for (int i = 300; i < 1500; ++i) t2.insert(i);
-    t1.merge(t2);
-    int i = 0;
-    bool flag = true;
-    for (auto it = t1.begin(); it != t1.end(); ++it, ++i) {
-        if (*it != i) {
-            flag = false;
-            break;
-        }
-    }
-    std::cout << flag << std::endl;
-}
+#endif
