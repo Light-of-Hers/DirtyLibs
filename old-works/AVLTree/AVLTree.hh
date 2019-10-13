@@ -139,12 +139,12 @@ class AvlTree {
             static std::pair<Tree, List> partial(List lst, size_t n) {
                 if (n == 0)
                     return std::make_pair(nullptr, lst);
-                size_t left_n = n / 2;
+                auto left_n = n / 2;
                 auto left_res = partial(lst, left_n);
                 Tree left_tree = left_res.first;
                 Tree top = left_res.second;
                 List left_lst = top->child[1];
-                size_t right_n = n - 1 - left_n;
+                auto right_n = n - 1 - left_n;
                 auto right_res = partial(left_lst, right_n);
                 Tree right_tree = right_res.first;
                 List others = right_res.second;
@@ -154,6 +154,9 @@ class AvlTree {
                     left_tree->parent = top;
                 if (right_tree)
                     right_tree->parent = top;
+                update_height(left_tree);
+                update_height(right_tree);
+                update_height(top);
                 return std::make_pair(top, others);
             }
             static Tree list2tree(List lst) {
