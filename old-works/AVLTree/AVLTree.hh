@@ -1,12 +1,12 @@
-#ifndef __CRZ_AVLTREE_HPP__
-#define __CRZ_AVLTREE_HPP__
+#ifndef __CRZ_AVLTREE_HH__
+#define __CRZ_AVLTREE_HH__
 
 #include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <utility>
 
-namespace crz{
+namespace crz {
 
 template <class T>
 class AvlTree {
@@ -45,7 +45,8 @@ class AvlTree {
                 cur = dest;
             } else {
                 for (dest = cur->parent; dest && dest->val < cur->val;
-                     dest = dest->parent) {}
+                     dest = dest->parent) {
+                }
                 cur = dest;
             }
             return *this;
@@ -62,7 +63,8 @@ class AvlTree {
                 cur = dest;
             } else {
                 for (dest = cur->parent; dest && dest->val > cur->val;
-                     dest = dest->parent) {}
+                     dest = dest->parent) {
+                }
                 cur = dest;
             }
             return *this;
@@ -127,14 +129,16 @@ class AvlTree {
                 return n;
             }
             static List copy2list(Tree cur_tree, List cur_lst) {
-                if (cur_tree == nullptr) return cur_lst;
+                if (cur_tree == nullptr)
+                    return cur_lst;
                 return copy2list(
                     cur_tree->child[0],
                     cons(cur_tree, copy2list(cur_tree->child[1], cur_lst)));
             }
             static List tree2list(Tree t) { return copy2list(t, nullptr); }
             static std::pair<Tree, List> partial(List lst, size_t n) {
-                if (n == 0) return std::make_pair(nullptr, lst);
+                if (n == 0)
+                    return std::make_pair(nullptr, lst);
                 size_t left_n = n / 2;
                 auto left_res = partial(lst, left_n);
                 Tree left_tree = left_res.first;
@@ -146,13 +150,16 @@ class AvlTree {
                 List others = right_res.second;
                 top->child[0] = left_tree;
                 top->child[1] = right_tree;
-                if (left_tree) left_tree->parent = top;
-                if (right_tree) right_tree->parent = top;
+                if (left_tree)
+                    left_tree->parent = top;
+                if (right_tree)
+                    right_tree->parent = top;
                 return std::make_pair(top, others);
             }
             static Tree list2tree(List lst) {
                 size_t len = 0;
-                for (Node tmp = lst; tmp; tmp = tmp->child[1], ++len) {}
+                for (Node tmp = lst; tmp; tmp = tmp->child[1], ++len) {
+                }
                 return partial(lst, len).first;
             }
             static List merge_list(List l1, List l2) {
@@ -191,16 +198,21 @@ class AvlTree {
             Tool::merge_list(Tool::tree2list(t1), Tool::tree2list(t2)));
     }
     static Node _find(Tree t, const T &val) {
-        if (t == nullptr) return nullptr;
-        if (t->val == val) return t;
+        if (t == nullptr)
+            return nullptr;
+        if (t->val == val)
+            return t;
         int rt = (val > t->val);
         return _find(t->child[rt], val);
     }
     static void _print(std::ostream &os, Tree t, int depth) {
-        if (t == nullptr) return;
-        for (int i = 0; i < depth; ++i) os << "----";
+        if (t == nullptr)
+            return;
+        for (int i = 0; i < depth; ++i)
+            os << "----";
         os << t->val << std::endl;
-        for (int i = 0; i < 2; ++i) _print(os, t->child[i], depth + 1);
+        for (int i = 0; i < 2; ++i)
+            _print(os, t->child[i], depth + 1);
     }
     static Node make_node(const T &v, Node p = nullptr, Node c1 = nullptr,
                           Node c2 = nullptr, int h = 0) {
@@ -208,31 +220,40 @@ class AvlTree {
         return res;
     }
     static inline int height(Tree t) {
-        if (t == nullptr) return -1;
+        if (t == nullptr)
+            return -1;
         return t->height;
     }
     static void update_height(Tree t) {
-        if (t == nullptr) return;
+        if (t == nullptr)
+            return;
         t->height = std::max(height(t->child[0]), height(t->child[1])) + 1;
     }
     static inline bool _empty(Tree t) { return t == nullptr; }
     static void _clear(Tree t) {
-        if (t == nullptr) return;
-        for (int i = 0; i < 2; ++i) _clear(t->child[i]);
+        if (t == nullptr)
+            return;
+        for (int i = 0; i < 2; ++i)
+            _clear(t->child[i]);
         delete t;
     }
     static Node _min(Tree t) {
-        if (t == nullptr) return nullptr;
-        if (t->child[0]) return _min(t->child[0]);
+        if (t == nullptr)
+            return nullptr;
+        if (t->child[0])
+            return _min(t->child[0]);
         return t;
     }
     static Node _max(Tree t) {
-        if (t == nullptr) return nullptr;
-        if (t->child[1]) return _max(t->child[1]);
+        if (t == nullptr)
+            return nullptr;
+        if (t->child[1])
+            return _max(t->child[1]);
         return t;
     }
     static Tree single_rotate(Tree t, int rt) {
-        if (t == nullptr) return nullptr;
+        if (t == nullptr)
+            return nullptr;
         Node new_top = t->child[rt];
         Node carry = new_top->child[rt ^ 1];
 
@@ -243,13 +264,15 @@ class AvlTree {
         update_height(t);
         update_height(new_top);
 
-        if (carry) carry->parent = t;
+        if (carry)
+            carry->parent = t;
         t->parent = new_top;
 
         return new_top;
     }
     static Tree double_rotate(Tree t, int rt) {
-        if (t == nullptr) return nullptr;
+        if (t == nullptr)
+            return nullptr;
         Node new_right = t->child[rt];
         Node new_top = new_right->child[rt ^ 1];
         Node new_left = t;
@@ -266,8 +289,10 @@ class AvlTree {
         update_height(new_top);
 
         new_left->parent = new_right->parent = new_top;
-        if (carry1) carry1->parent = new_left;
-        if (carry2) carry2->parent = new_right;
+        if (carry1)
+            carry1->parent = new_left;
+        if (carry2)
+            carry2->parent = new_right;
 
         return new_top;
     }
@@ -276,7 +301,8 @@ class AvlTree {
             t = make_node(val);
             return t;
         }
-        if (val == t->val) return t;
+        if (val == t->val)
+            return t;
 
         int rt = (val > t->val);
         t->child[rt] = _insert(t->child[rt], val);
@@ -293,7 +319,8 @@ class AvlTree {
         return t;
     }
     static Tree _erase(Tree t, const T &val) {
-        if (t == nullptr) return nullptr;
+        if (t == nullptr)
+            return nullptr;
         if (val == t->val) {
             for (int i = 0; i < 2; ++i) {
                 if (t->child[i] == nullptr) {
@@ -314,7 +341,8 @@ class AvlTree {
             rt = (val > t->val);
             t->child[rt] = _erase(t->child[rt], val);
         }
-        if (t->child[rt]) t->child[rt]->parent = t;
+        if (t->child[rt])
+            t->child[rt]->parent = t;
 
         rt ^= 1;
         if (height(t->child[rt]) > height(t->child[rt ^ 1]) + 1) {
@@ -330,7 +358,7 @@ class AvlTree {
     }
     // ---------------------------------------
 };
-   
+
 }; // namespace crz
 
 #endif
