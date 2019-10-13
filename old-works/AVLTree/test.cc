@@ -21,4 +21,9 @@ int main() {
     std::cout << std::boolalpha;
     std::cout << "merge check ok? " << flag << std::endl;
     std::cout << t1;
+
+    for (int i = 0; i < 1000; ++i)
+        t1.erase(i);
+    std::cout << std::endl;
+    std::cout << t1;
 }
